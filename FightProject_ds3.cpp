@@ -1,3 +1,4 @@
+//Work In Progress-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #include "Armor.h"
 #include "Character.h"
 #include "Weapon.h"
@@ -8,7 +9,8 @@
 
 using namespace std;
 
-void Fight (Character&, Character&);
+bool Fight (Character&, Character&);
+void WarriorXAtk (Character&, Character&);
 
 int main(int argc, char **argv)
 {
@@ -46,9 +48,103 @@ int main(int argc, char **argv)
 
 	Character Warrior1 (arm1, wpn1), Warrior2 (arm2, wpn2);
 	srand(time(NULL));
+	Fight (Warrior1, Warrior2);
 }
 
-void Fight (Character &Warrior1, Character &Warrior2)
+bool Fight (Character &Warrior1, Character &Warrior2)
+{
+	bool Winner = 0;
+	Warrior1.Hp = Warrior1.BaseHp;
+	Warrior2.Hp = Warrior2.BaseHp;
+	Warrior1.Energy = Warrior1.BaseEnergy;
+	Warrior2.Energy = Warrior2.BaseEnergy;
+	while (Warrior1.Hp > 0 && Warrior2.Hp > 0)
+	{
+		if (Warrior1.Weapon1.AtkDelay() < Warrior2.Weapon1.AtkDelay())	//Warrior 1 atakuje pierwszy
+		{
+			if (!Warrior1.SkipRound)
+			{
+				WarriorXAtk (Warrior1, Warrior2);
+			}
+			if (Warrior2.Hp <= 0)
+			{
+				Winner = 0; break;
+			}
+			if (!Warrior2.SkipRound)
+			{
+				WarriorXAtk (Warrior2, Warrior1);
+			}
+			if (Warrior1.Hp <= 0)
+			{
+				Winner = 1; break;
+			}
+			Warrior1.Energy += 15;
+			Warrior2.Energy += 15;
+		}
+		else if (Warrior2.Weapon1.AtkDelay() < Warrior1.Weapon1.AtkDelay())	//Warrior 2 atakuje pierwszy
+		{
+			if (!Warrior2.SkipRound)
+			{
+				WarriorXAtk (Warrior2, Warrior1);
+			}
+			if (Warrior1.Hp <= 0)
+			{
+				Winner = 0; break;
+			}
+			if (!Warrior1.SkipRound)
+			{
+				WarriorXAtk (Warrior1, Warrior2);
+			}
+			if (Warrior2.Hp <= 0)
+			{
+				Winner = 1; break;
+			}
+			Warrior1.Energy += 15;
+			Warrior2.Energy += 15;
+		}
+	}
+	return Winner;
+}
+
+void WarriorXAtk (Character &Warrior1, Character &Warrior2)
+{
+	Warrior1.SkipRound = false;		//na poczatku tury resetujemy SkipRound, poniewaz "decyzja", czy dana postac atakuje juz jest podjeta przez instrukcje warunkowa zawarta przed wykonaniem tej funkcji
+	Warrior2.SkipRound = false;
+	if (int randdodge = rand() % 100 >= Warrior2.BurdenPercent(Warrior2.Armor1, Warrior2.Weapon1) && Warrior2.Energy > 0)	//przypadek gdy Warrior 2 unika
+	{
+		Warrior1.Energy -= Warrior1.Weapon1.EnergyConsumption();
+		Warrior2.Energy -= (Warrior2.BurdenPercent(Warrior2.Armor1, Warrior2.Weapon1) / 5);	//strata energii przy uniku zalezna od stopnia obciazenia
+		if (Warrior1.Energy < 0) Warrior1.Energy = 0;
+		if (Warrior2.Energy < 0) Warrior2.Energy = 0;
+	}
+	else if (Warrior2.Energy > 0)	//przypadek gdy Warrior 2 blokuje
+	{
+		if (int randblock = rand() % 100 < 80)	//blok sie udaje
+		{
+			Warrior1.Energy -= Warrior1.Weapon1.EnergyConsumption();
+			Warrior2.Energy -= (10 + ((100 - Warrior2.Armor1.getPoise()) / 10));
+			if (Warrior1.Energy < 0) Warrior1.Energy = 0;
+			if (Warrior2.Energy < 0) Warrior2.Energy = 0;
+		}
+		else						//blok sie nie udaje, Warrior 2 zbiera baty
+		{
+			if (Warrior1.Weapon1.PoiseDmg() > Warrior2.Armor1.getPoise()) Warrior2.SkipRound = true;	//jesli Warrior 2 ma za mala stabilnosc, traci ture
+			Warrior1.Energy -= Warrior1.Weapon1.EnergyConsumption();
+			if (Warrior1.Energy < 0) Warrior1.Energy = 0;
+			Warrior2.Hp -= Warrior1.DealDmg(Warrior2.Armor1, Warrior1.Weapon1);		//Warrior 2 zbiera dmg, ale nie traci energii, bo nie wykonal zadnej akcji
+		}
+	}
+	else if (Warrior2.Energy <= 0)	//podobnie jak przy nieudanym bloku, ale tu Warrior 2 traci swoja kolejke
+	{
+		Warrior1.Energy -= Warrior1.Weapon1.EnergyConsumption();
+		if (Warrior1.Energy < 0) Warrior1.Energy = 0;
+		Warrior2.Hp -= Warrior1.DealDmg(Warrior2.Armor1, Warrior1.Weapon1);
+		Warrior2.SkipRound = true;											//moge w zrezygnowac z mechaniki skipround zaleznie od tego jak to wyjdzie dalej ----------- dotad sie buduje kod jak na razie (29.05)
+	}
+}
+
+
+/*void Fight (Character &Warrior1, Character &Warrior2)  ---stara wersja---
 {
 	Warrior1.Hp = Warrior1.BaseHp;
 	Warrior2.Hp = Warrior2.BaseHp;
@@ -56,38 +152,43 @@ void Fight (Character &Warrior1, Character &Warrior2)
 	Warrior2.Energy = Warrior2.BaseEnergy;
 	while (Warrior1.Hp > 0 && Warrior2.Hp > 0)
 	{
-		if (Warrior1.Weapon1.AtkDelay() < Warrior2.Weapon1.AtkDelay() && !Warrior1.SkipRound)	//Warrior1 atakuje pierwszy
+		if (Warrior1.Weapon1.AtkDelay() < Warrior2.Weapon1.AtkDelay())	//Warrior1 atakuje pierwszy
 		{
-			if (int randdodge = rand() % 100 >= Warrior2.BurdenPercent(Warrior2.Armor1, Warrior2.Weapon1) && Warrior2.Energy > 0)	//przypadek gdy Warrior 2 unika
+			if (!Warrior1.SkipRound)
 			{
-				Warrior1.Energy -= Warrior1.Weapon1.EnergyConsumption();
-				Warrior2.Energy -= (Warrior2.BurdenPercent(Warrior2.Armor1, Warrior2.Weapon1) / 5);	//strata energii przy uniku zalezna od stopnia obciazenia
-				if (Warrior1.Energy < 0) Warrior1.Energy = 0;
-				if (Warrior2.Energy < 0) Warrior2.Energy = 0;
-			}
-			else if (Warrior2.Energy > 0)	//przypadek gdy Warrior 2 blokuje
-			{
-				if (int randblock = rand() % 100 < 80)	//blok sie udaje
+				if (int randdodge = rand() % 100 >= Warrior2.BurdenPercent(Warrior2.Armor1, Warrior2.Weapon1) && Warrior2.Energy > 0)	//przypadek gdy Warrior 2 unika
 				{
 					Warrior1.Energy -= Warrior1.Weapon1.EnergyConsumption();
-					Warrior2.Energy -= (10 + ((100 - Warrior2.Armor1.getPoise()) / 10));
+					Warrior2.Energy -= (Warrior2.BurdenPercent(Warrior2.Armor1, Warrior2.Weapon1) / 5);	//strata energii przy uniku zalezna od stopnia obciazenia
 					if (Warrior1.Energy < 0) Warrior1.Energy = 0;
 					if (Warrior2.Energy < 0) Warrior2.Energy = 0;
 				}
-				else						//blok sie nie udaje, Warrior 2 zbiera baty
+				else if (Warrior2.Energy > 0)	//przypadek gdy Warrior 2 blokuje
+				{
+					if (int randblock = rand() % 100 < 80)	//blok sie udaje
+					{
+						Warrior1.Energy -= Warrior1.Weapon1.EnergyConsumption();
+						Warrior2.Energy -= (10 + ((100 - Warrior2.Armor1.getPoise()) / 10));
+						if (Warrior1.Energy < 0) Warrior1.Energy = 0;
+						if (Warrior2.Energy < 0) Warrior2.Energy = 0;
+					}
+					else						//blok sie nie udaje, Warrior 2 zbiera baty
+					{
+						Warrior1.Energy -= Warrior1.Weapon1.EnergyConsumption();
+						if (Warrior1.Energy < 0) Warrior1.Energy = 0;
+						Warrior2.Hp -= Warrior1.DealDmg(Warrior2.Armor1, Warrior1.Weapon1);		//Warrior 2 zbiera dmg, ale nie traci energii, bo nie wykonal zadnej akcji
+					}
+				}
+				else if (Warrior2.Energy <= 0)	//podobnie jak przy nieudanym bloku, ale tu Warrior 2 traci swoja kolejke
 				{
 					Warrior1.Energy -= Warrior1.Weapon1.EnergyConsumption();
 					if (Warrior1.Energy < 0) Warrior1.Energy = 0;
-					Warrior2.Hp -= Warrior1.DealDmg(Warrior2.Armor1, Warrior1.Weapon1);		//Warrior 2 zbiera dmg, ale nie traci energii, bo nie wykonal zadnej akcji
+					Warrior2.Hp -= Warrior1.DealDmg(Warrior2.Armor1, Warrior1.Weapon1);
+					Warrior2.SkipRound = true;											//moge w zrezygnowac z mechaniki skipround zaleznie od tego jak to wyjdzie dalej ----------- dotad sie buduje kod jak na razie (29.05)
 				}
-			}
-			else if (Warrior2.Energy <= 0)	//podobnie jak przy nieudanym bloku, ale tu Warrior 2 traci swoja kolejke
-			{
-				Warrior1.Energy -= Warrior1.Weapon1.EnergyConsumption();
-				if (Warrior1.Energy < 0) Warrior1.Energy = 0;
-				Warrior2.Hp -= Warrior1.DealDmg(Warrior2.Armor1, Warrior1.Weapon1);
-				Warrior2.SkipRound = true;											//moge w zrezygnowac z mechaniki skipround zaleznie od tego jak to wyjdzie dalej ----------- dotad sie buduje kod jak na razie (29.05)
+				//-----teraz kolej na Wariora 2-----//
+
 			}
 		}
 	}
-}
+}*/
