@@ -31,4 +31,4 @@ b) pancerz
  4: Thief set - waga 12, obrona 90, stabilność 10
  5: OP - waga 13.37, obrona 666, stabilność 420
  
- Dodane zostaną fight logi.
+ 2.06: Dodane fight logi, wyeliminowane błędy z traceniem kolejki i dziwnymi werdyktami koncowymi.
