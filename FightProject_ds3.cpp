@@ -52,8 +52,7 @@ int main(int argc, char **argv)
 
 	Character Warrior1 (arm1, wpn1), Warrior2 (arm2, wpn2);
 	srand(time(NULL));
-	Fight (Warrior1, Warrior2);
-	(!Fight(Warrior1, Warrior2)) ? (cout << "Warrior 1 wygrwywa!\n") : (cout << "Warrior 2 wygrywa!\n");
+	(Fight (Warrior1, Warrior2) == 0) ? (cout<<"Warrior 1 wygrywa pojedynek!\n------------------------------"): (cout<<"Warrior 2 wygrywa pojedynek!\n------------------------------");
 	delete[] arg;
 }
 
@@ -72,18 +71,24 @@ bool Fight (Character &Warrior1, Character &Warrior2)
 		{
 			if (!Warrior1.SkipRound)
 			{
+				cout << "Warrior 1 atakuje.\n";
+				Warrior2.SkipRound = 0;
 				WarriorXAtk (Warrior1, Warrior2);
 			}
 			if (Warrior2.Hp <= 0)
 			{
+				cout << ">>Kontrolnie<< Warrior 2 ginie\n";
 				Winner = 0; break;
 			}
 			if (!Warrior2.SkipRound)
 			{
+				cout << "Warrior 2 atakuje.\n";
+				Warrior1.SkipRound = 0;
 				WarriorXAtk (Warrior2, Warrior1);
 			}
 			if (Warrior1.Hp <= 0)
 			{
+				cout << ">>Kontrolnie<< Warrior 1 ginie\n";
 				Winner = 1; break;
 			}
 			Warrior1.Energy += 15;
@@ -93,18 +98,24 @@ bool Fight (Character &Warrior1, Character &Warrior2)
 		{
 			if (!Warrior2.SkipRound)
 			{
+				cout << "Warrior 2 atakuje.\n";
+				Warrior1.SkipRound = 0;
 				WarriorXAtk (Warrior2, Warrior1);
 			}
 			if (Warrior1.Hp <= 0)
 			{
+				cout << ">>Kontrolnie<< Warrior 1 ginie\n";
 				Winner = 1; break;
 			}
 			if (!Warrior1.SkipRound)
 			{
+				cout << "Warrior 1 atakuje.\n";
+				Warrior2.SkipRound = 0;
 				WarriorXAtk (Warrior1, Warrior2);
 			}
 			if (Warrior2.Hp <= 0)
 			{
+				cout << ">>Kontrolnie<< Warrior 2 ginie\n";
 				Winner = 0; break;
 			}
 			Warrior1.Energy += 15;
@@ -120,30 +131,36 @@ void WarriorXAtk (Character &Warrior1, Character &Warrior2)
 {
 	Warrior1 = Warrior1; //---
 	Warrior2 = Warrior2; //---
-	Warrior1.SkipRound = false;		//na poczatku tury resetujemy SkipRound, poniewaz "decyzja", czy dana postac atakuje juz jest podjeta przez instrukcje warunkowa zawarta przed wykonaniem tej funkcji
-	Warrior2.SkipRound = false;
+
 	if (int randdodge = rand() % 100 >= Warrior2.BurdenPercent(Warrior2.Armor1, Warrior2.Weapon1) && Warrior2.Energy > 0)	//przypadek gdy Warrior 2 unika
 	{
 		Warrior1.Energy -= Warrior1.Weapon1.EnergyConsumption();
 		Warrior2.Energy -= (Warrior2.BurdenPercent(Warrior2.Armor1, Warrior2.Weapon1) / 5);	//strata energii przy uniku zalezna od stopnia obciazenia
 		if (Warrior1.Energy < 0) Warrior1.Energy = 0;
 		if (Warrior2.Energy < 0) Warrior2.Energy = 0;
+		cout << "Unik.\n" << "Energia atakujacego: " << Warrior1.Energy << "\nEnergia broniacego sie: " << Warrior2.Energy << "\n\n";
 	}
 	else if (Warrior2.Energy > 0)	//przypadek gdy Warrior 2 blokuje
 	{
-		if (int randblock = rand() % 100 < 80)	//blok sie udaje
+		if (int randblock = rand() % 100 < 70)	//blok sie udaje
 		{
 			Warrior1.Energy -= Warrior1.Weapon1.EnergyConsumption();
 			Warrior2.Energy -= (10 + ((100 - Warrior2.Armor1.getPoise()) / 10));
 			if (Warrior1.Energy < 0) Warrior1.Energy = 0;
 			if (Warrior2.Energy < 0) Warrior2.Energy = 0;
+			cout << "Blok.\n" << "Energia atakujacego: " << Warrior1.Energy << "\nEnergia broniacego sie: " << Warrior2.Energy << "\n\n";
 		}
 		else						//blok sie nie udaje, Warrior 2 zbiera baty
 		{
-			if (Warrior1.Weapon1.PoiseDmg() > Warrior2.Armor1.getPoise()) Warrior2.SkipRound = true;	//jesli Warrior 2 ma za mala stabilnosc, traci ture
+			if (Warrior1.Weapon1.PoiseDmg() > Warrior2.Armor1.getPoise()) 
+			{ 
+				Warrior2.SkipRound = true; 
+				cout << "Broniacy sie traci  kolejke.\n";
+			}	//jesli Warrior 2 ma za mala stabilnosc, traci ture
 			Warrior1.Energy -= Warrior1.Weapon1.EnergyConsumption();
 			if (Warrior1.Energy < 0) Warrior1.Energy = 0;
 			Warrior2.Hp -= Warrior1.DealDmg(Warrior2.Armor1, Warrior1.Weapon1);		//Warrior 2 zbiera dmg, ale nie traci energii, bo nie wykonal zadnej akcji
+			cout << "Udany atak.\n" << "Energia atakujacego: " << Warrior1.Energy << "\nEnergia broniacego sie: " << Warrior2.Energy << "\nHP broniacego sie: " << Warrior2.Hp << "\n\n";
 		}
 	}
 	else if (Warrior2.Energy <= 0)	//podobnie jak przy nieudanym bloku, ale tu Warrior 2 traci swoja kolejke
@@ -152,5 +169,7 @@ void WarriorXAtk (Character &Warrior1, Character &Warrior2)
 		if (Warrior1.Energy < 0) Warrior1.Energy = 0;
 		Warrior2.Hp -= Warrior1.DealDmg(Warrior2.Armor1, Warrior1.Weapon1);
 		Warrior2.SkipRound = true;
+		cout << "Broniacy sie traci  kolejke.\n";
+		cout << "Udany atak.\n" << "Energia atakujacego: " << Warrior1.Energy << "\nEnergia broniacego sie: " << Warrior2.Energy << "\nHP broniacego sie: " << Warrior2.Hp << "\n\n";
 	}
 }
