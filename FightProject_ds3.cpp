@@ -77,7 +77,7 @@ bool Fight (Character &Warrior1, Character &Warrior2)
 			}
 			if (Warrior2.Hp <= 0)
 			{
-				cout << ">>Kontrolnie<< Warrior 2 ginie\n";
+				cout << "Warrior 2 ginie\n";
 				Winner = 0; break;
 			}
 			if (!Warrior2.SkipRound)
@@ -88,7 +88,7 @@ bool Fight (Character &Warrior1, Character &Warrior2)
 			}
 			if (Warrior1.Hp <= 0)
 			{
-				cout << ">>Kontrolnie<< Warrior 1 ginie\n";
+				cout << "Warrior 1 ginie\n";
 				Winner = 1; break;
 			}
 			Warrior1.Energy += 15;
