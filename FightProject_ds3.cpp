@@ -52,7 +52,7 @@ int main(int argc, char **argv)
 
 	Character Warrior1 (arm1, wpn1), Warrior2 (arm2, wpn2);
 	srand(time(NULL));
-	(Fight (Warrior1, Warrior2) == 0) ? (cout<<"Warrior 1 wygrywa pojedynek!\n------------------------------\n"): (cout<<"Warrior 2 wygrywa pojedynek!\n------------------------------");
+	(Fight (Warrior1, Warrior2) == 0) ? (cout<<"Warrior 1 wygrywa pojedynek!\n------------------------------\n"): (cout<<"Warrior 2 wygrywa pojedynek!\n------------------------------\n");
 	delete[] arg;
 }
 
