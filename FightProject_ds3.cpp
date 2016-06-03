@@ -52,7 +52,7 @@ int main(int argc, char **argv)
 
 	Character Warrior1 (arm1, wpn1), Warrior2 (arm2, wpn2);
 	srand(time(NULL));
-	(Fight (Warrior1, Warrior2) == 0) ? (cout<<"Warrior 1 wygrywa pojedynek!\n------------------------------"): (cout<<"Warrior 2 wygrywa pojedynek!\n------------------------------");
+	(Fight (Warrior1, Warrior2) == 0) ? (cout<<"Warrior 1 wygrywa pojedynek!\n------------------------------\n"): (cout<<"Warrior 2 wygrywa pojedynek!\n------------------------------");
 	delete[] arg;
 }
 
@@ -104,7 +104,7 @@ bool Fight (Character &Warrior1, Character &Warrior2)
 			}
 			if (Warrior1.Hp <= 0)
 			{
-				cout << ">>Kontrolnie<< Warrior 1 ginie\n";
+				cout << "Warrior 1 ginie\n";
 				Winner = 1; break;
 			}
 			if (!Warrior1.SkipRound)
@@ -115,11 +115,13 @@ bool Fight (Character &Warrior1, Character &Warrior2)
 			}
 			if (Warrior2.Hp <= 0)
 			{
-				cout << ">>Kontrolnie<< Warrior 2 ginie\n";
+				cout << "Warrior 2 ginie\n";
 				Winner = 0; break;
 			}
 			Warrior1.Energy += 15;
 			Warrior2.Energy += 15;
+			if (Warrior1.Energy > Warrior1.BaseEnergy) Warrior1.Energy = Warrior1.BaseEnergy;
+			if (Warrior2.Energy > Warrior2.BaseEnergy) Warrior2.Energy = Warrior2.BaseEnergy;
 		}
 	}
 	if (Warrior1.Hp <= 0) Winner = 1;
