@@ -19,7 +19,7 @@ double Character::BurdenPercent (Armor a, Weapon b)
 
 int Character::DealDmg (Armor a, Weapon b)
 {
-	int DmgOutput = (double)b.getDmg() * a.ReduceDmgPercent();
+	int DmgOutput = (double)b.getDmg() * (1 - a.ReduceDmgPercent());
 	//std::cout << "obrazenia: " << DmgOutput << endl;
 	return DmgOutput;
 }

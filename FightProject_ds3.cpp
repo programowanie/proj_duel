@@ -93,6 +93,8 @@ bool Fight (Character &Warrior1, Character &Warrior2)
 			}
 			Warrior1.Energy += 15;
 			Warrior2.Energy += 15;
+			if (Warrior1.Energy > Warrior1.BaseEnergy) Warrior1.Energy = Warrior1.BaseEnergy;
+			if (Warrior2.Energy > Warrior2.BaseEnergy) Warrior2.Energy = Warrior2.BaseEnergy;
 		}
 		else if (Warrior2.Weapon1.AtkDelay() < Warrior1.Weapon1.AtkDelay())	//Warrior 2 atakuje pierwszy
 		{
@@ -139,7 +141,9 @@ void WarriorXAtk (Character &Warrior1, Character &Warrior2)
 		Warrior1.Energy -= Warrior1.Weapon1.EnergyConsumption();
 		Warrior2.Energy -= (Warrior2.BurdenPercent(Warrior2.Armor1, Warrior2.Weapon1) / 5);	//strata energii przy uniku zalezna od stopnia obciazenia
 		if (Warrior1.Energy < 0) Warrior1.Energy = 0;
+		else if (Warrior1.Energy > Warrior1.BaseEnergy) Warrior1.Energy = Warrior1.BaseEnergy;
 		if (Warrior2.Energy < 0) Warrior2.Energy = 0;
+		else if (Warrior2.Energy > Warrior2.BaseEnergy) Warrior2.Energy = Warrior2.BaseEnergy;
 		cout << "Unik.\n" << "Energia atakujacego: " << Warrior1.Energy << "\nEnergia broniacego sie: " << Warrior2.Energy << "\n\n";
 	}
 	else if (Warrior2.Energy > 0)	//przypadek gdy Warrior 2 blokuje
@@ -149,7 +153,9 @@ void WarriorXAtk (Character &Warrior1, Character &Warrior2)
 			Warrior1.Energy -= Warrior1.Weapon1.EnergyConsumption();
 			Warrior2.Energy -= (10 + ((100 - Warrior2.Armor1.getPoise()) / 10));
 			if (Warrior1.Energy < 0) Warrior1.Energy = 0;
+			else if (Warrior1.Energy > Warrior1.BaseEnergy) Warrior1.Energy = Warrior1.BaseEnergy;
 			if (Warrior2.Energy < 0) Warrior2.Energy = 0;
+			else if (Warrior2.Energy > Warrior2.BaseEnergy) Warrior2.Energy = Warrior2.BaseEnergy;
 			cout << "Blok.\n" << "Energia atakujacego: " << Warrior1.Energy << "\nEnergia broniacego sie: " << Warrior2.Energy << "\n\n";
 		}
 		else						//blok sie nie udaje, Warrior 2 zbiera baty
@@ -161,6 +167,7 @@ void WarriorXAtk (Character &Warrior1, Character &Warrior2)
 			}	//jesli Warrior 2 ma za mala stabilnosc, traci ture
 			Warrior1.Energy -= Warrior1.Weapon1.EnergyConsumption();
 			if (Warrior1.Energy < 0) Warrior1.Energy = 0;
+			else if (Warrior1.Energy > Warrior1.BaseEnergy) Warrior1.Energy = Warrior1.BaseEnergy;
 			Warrior2.Hp -= Warrior1.DealDmg(Warrior2.Armor1, Warrior1.Weapon1);		//Warrior 2 zbiera dmg, ale nie traci energii, bo nie wykonal zadnej akcji
 			cout << "Udany atak.\n" << "Energia atakujacego: " << Warrior1.Energy << "\nEnergia broniacego sie: " << Warrior2.Energy << "\nHP broniacego sie: " << Warrior2.Hp << "\n\n";
 		}
@@ -169,6 +176,7 @@ void WarriorXAtk (Character &Warrior1, Character &Warrior2)
 	{
 		Warrior1.Energy -= Warrior1.Weapon1.EnergyConsumption();
 		if (Warrior1.Energy < 0) Warrior1.Energy = 0;
+		else if (Warrior1.Energy > Warrior1.BaseEnergy) Warrior1.Energy = Warrior1.BaseEnergy;
 		Warrior2.Hp -= Warrior1.DealDmg(Warrior2.Armor1, Warrior1.Weapon1);
 		Warrior2.SkipRound = true;
 		cout << "Broniacy sie traci  kolejke.\n";
