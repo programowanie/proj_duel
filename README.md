@@ -32,5 +32,6 @@ b) pancerz
  5: OP - waga 13.37, obrona 666, stabilność 420
  
  2.06: Dodane fight logi, wyeliminowane błędy z traceniem kolejki i dziwnymi werdyktami koncowymi.
+ 
  6.06: Dodane instrukcje sprawdzające, czy energia nie wykracza ponad maksimum, naprawiona metoda klasy character sprawiajaca, że ciężki pancerz dawał marginalną ochronę, a lekki mógł zatrzymać nawet samolot lecący na WTC.
  GOTOWE
