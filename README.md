@@ -13,22 +13,37 @@ energia - używana do wyprowadzania ataków i blokowania/unikania tychże, regen
 Walka kończy się oczywiście, gdy jedna postać polegnie.
 
 Argumenty funkcji main:
+
 1: Broń pierwszego wojownika
+
 2: Pancerz pierwszego wojownika
+
 3: Broń drugiego wojownika
+
 4: Pancerz drugiego wojownika
 
 Lista wyposażenia:
+
 a) broń
+
  1: Straightsword - waga 4.5, obrażenia 210
+
  2: Greatsword - waga 9, obrażenia 360
+
  3: Halberd - waga 8, obrażenia 350
+
  4: Ulumulu - waga 6.66, obrażenia 420
+
 b) pancerz
+
  1: Knight set - waga 28.5, obrona 170, stabilność 20
+
  2: Artorias set - waga 18, obrona 140, stabilność 15
+
  3: Havel set - waga 45, obrona 500, stabilność 50
+
  4: Thief set - waga 12, obrona 90, stabilność 10
+
  5: OP - waga 13.37, obrona 666, stabilność 420
  
  2.06: Dodane fight logi, wyeliminowane błędy z traceniem kolejki i dziwnymi werdyktami koncowymi.
